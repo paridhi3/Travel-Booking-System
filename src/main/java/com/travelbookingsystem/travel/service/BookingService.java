@@ -4,6 +4,7 @@ import com.travelbookingsystem.travel.model.Booking;
 import com.travelbookingsystem.travel.repository.BookingRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -34,9 +35,30 @@ public class BookingService {
         return bookingRepository.findByTransportType(transportType);
     }
 
-    // Create a new booking
-    public void addBooking(Booking booking) {
+    // Create a booking
+    private void createBooking(Booking booking) {
+        booking.setBookingStatus("CONFIRMED");
+        booking.setPaymentStatus("PENDING");
+        booking.setBookingDate(LocalDateTime.now());
         bookingRepository.save(booking);
+    }
+
+    // Book a Train
+    public void bookTrain(Booking booking) {
+        booking.setTransportType("TRAIN");
+        createBooking(booking);
+    }
+
+    // Book a Flight
+    public void bookFlight(Booking booking) {
+        booking.setTransportType("FLIGHT");
+        createBooking(booking);
+    }
+
+    // Book a Bus
+    public void bookBus(Booking booking) {
+        booking.setTransportType("BUS");
+        createBooking(booking);
     }
 
     // Update booking status

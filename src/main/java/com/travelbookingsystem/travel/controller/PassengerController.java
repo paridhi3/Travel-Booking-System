@@ -27,11 +27,17 @@ public class PassengerController {
     }
 
     // Add a new passenger (Registration)
-    @PostMapping
+    @PostMapping("/register")
     public String createPassenger(@RequestBody Passenger passenger) {
         passengerService.addPassenger(passenger);
         return "Passenger added successfully";
     }
+    
+//    @PostMapping("/login")
+//    public String loginPassenger(@RequestBody LoginRequest request) {
+//        boolean isAuthenticated = passengerService.authenticatePassenger(request);
+//        return isAuthenticated ? "Login successful" : "Invalid credentials";
+//    }
 
     // Delete a passenger by ID
     @DeleteMapping("/{id}")
