@@ -13,21 +13,37 @@ public class BookingEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long bookingId;
 
-    private long userId;
+    @ManyToOne
+    @JoinColumn(name = "passenger_id", nullable = false)
+    private PassengerEntity passenger;  // Foreign key reference to UserEntity
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "transport_type", nullable = false)
     private TransportType transportType;
 
+    @Column(name = "transport_id", nullable = false)
     private long transportId;
+    
+    @Column(name = "seat_number", length = 10, nullable = false)
     private String seatNumber;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "booking_status", nullable = false)
     private BookingStatus bookingStatus;
 
     @Enumerated(EnumType.STRING)
-    private PaymentStatus paymentStatus;
-
+    @Column(name = "payment_status", nullable = false)
+    private PaymentStatus paymentStatus = PaymentStatus.PENDING; // Default value;
+    
+    @Column(name = "booking_date", nullable = false, updatable = false)
     private LocalDateTime bookingDate;
+
+    @PrePersist
+    protected void onCreate() {
+        if (bookingDate == null) {
+            bookingDate = LocalDateTime.now();
+        }
+    }
 }
 
 enum TransportType {

@@ -12,10 +12,21 @@ public class PassengerEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Specifies auto-increment behavior for the primary key (passengerId).
     private long passengerId;
 
+    @Column(name = "full_name", nullable = false)
     private String full_name;
+    
+    @Column(name = "email", nullable = false)
     private String email;
+    
+    @Column(name = "password", nullable = false)
     private String password;
+    
+    @Column(name = "gender", nullable = false)
     private String gender;
+    
+    @Column(name = "age", nullable = false)
     private int age;
+    
+    @Column(name = "contact", nullable = false)
     private String contact;
 }
