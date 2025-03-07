@@ -48,7 +48,7 @@ public class BookingRepository {
         return jdbcTemplate.query(sql, bookingRowMapper);
     }
 
-    // Find booking by ID
+    // Find booking by booking ID
     public Booking findById(long bookingId) {
         String sql = "SELECT * FROM booking WHERE booking_id = ?";
         return jdbcTemplate.queryForObject(sql, bookingRowMapper, bookingId);
