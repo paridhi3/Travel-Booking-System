@@ -47,7 +47,7 @@ public class BusController {
     @GetMapping("/route")
     public ResponseEntity<?> getBusesByRoute(@RequestParam String source, @RequestParam String destination) {
         try {
-            List<Bus> buses = busService.getBusesByRoute(source, destination);
+            List<Bus> buses = busService.getBusesBySourceAndDestination(source, destination);
             return buses.isEmpty() ? ResponseEntity.status(HttpStatus.NOT_FOUND).body("No buses found for the given route")
                                    : ResponseEntity.ok(buses);
         } catch (Exception e) {
@@ -71,7 +71,7 @@ public class BusController {
     @PostMapping
     public ResponseEntity<?> addBus(@RequestBody Bus bus) {
         try {
-            busService.addBus(bus);
+            busService.saveBus(bus);
             return ResponseEntity.status(HttpStatus.CREATED).body("Bus added successfully!");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error adding bus: " + e.getMessage());
@@ -93,7 +93,7 @@ public class BusController {
     @DeleteMapping("/{busId}")
     public ResponseEntity<?> deleteBus(@PathVariable long busId) {
         try {
-            busService.deleteBus(busId);
+            busService.deleteBusById(busId);
             return ResponseEntity.ok("Bus deleted successfully!");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting bus: " + e.getMessage());

@@ -2,11 +2,26 @@ package com.travelbookingsystem.travel.repository;
 
 import com.travelbookingsystem.travel.model.Bus;
 import com.travelbookingsystem.travel.model.BusClass;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
+
+/*
+ * BusRepository Methods:
+ * 1. save(Bus bus) -> int
+ * 2. findAll() -> List<Bus>
+ * 3. findById(long busId) -> Bus
+ * 4. update(Bus bus) -> int
+ * 5. updateAvailableSeats(Long busId, int seatChange) -> int
+ * 6. deleteById(long busId) -> int
+ * 7. findBySourceAndDestination(String source, String destination) -> List<Bus>
+ * 8. findByPriceBetween(double minPrice, double maxPrice) -> List<Bus>
+ */
+
 
 @Repository
 public class BusRepository {
@@ -76,6 +91,28 @@ public class BusRepository {
                 bus.getBusId()
         );
     }
+    
+    // Update available seats
+    public int updateAvailableSeats(Long busId, int seatChange) {
+        String fetchSql = "UPDATE bus SET available_seats = ? WHERE bus_id = ?";
+        List<Bus> buss = jdbcTemplate.query(fetchSql, busRowMapper, busId);
+
+        if (buss.isEmpty()) {
+            return 0; // Bus not found, return 0 to indicate no update
+        }
+
+        Bus bus = buss.get(0); // Retrieve the first (and only) result
+        int newSeats = Math.max(0, bus.getAvailableSeats() - seatChange); 
+
+        // Update available seats in the database
+        String updateSql = "UPDATE bus SET available_seats = ? WHERE bus_id = ?";
+        int rowsUpdated = jdbcTemplate.update(updateSql, newSeats, busId);
+
+        // Update the bus object as well
+        bus.setAvailableSeats(newSeats);
+
+        return rowsUpdated;
+    }
 
     // Delete bus by ID
     public int deleteById(long busId) {
@@ -94,4 +131,5 @@ public class BusRepository {
         String sql = "SELECT * FROM bus WHERE price BETWEEN ? AND ?";
         return jdbcTemplate.query(sql, busRowMapper, minPrice, maxPrice);
     }
+    
 }

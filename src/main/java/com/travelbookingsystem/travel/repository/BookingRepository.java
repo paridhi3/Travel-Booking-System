@@ -7,6 +7,20 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+
+/*
+ * BookingRepository Methods:
+ * 1. save(Booking booking) - Saves a new booking record.
+ * 2. findAll() - Retrieves all bookings.
+ * 3. findById(long bookingId) - Retrieves a booking by its ID.
+ * 4. findByPassengerId(long passengerId) - Retrieves all bookings for a specific passenger.
+ * 5. updateBookingStatus(long bookingId, String status) - Updates the booking status.
+ * 6. updatePaymentStatus(long bookingId, String status) - Updates the payment status.
+ * 7. deleteById(long bookingId) - Deletes a booking by its ID.
+ * 8. findByTransportType(String transportType) - Retrieves all bookings for a given transport type.
+ */
+
+
 @Repository
 public class BookingRepository {
     private final JdbcTemplate jdbcTemplate;

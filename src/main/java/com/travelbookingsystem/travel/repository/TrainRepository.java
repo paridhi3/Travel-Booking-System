@@ -11,6 +11,21 @@ import org.springframework.stereotype.Repository;
 //import java.time.LocalTime;
 import java.util.List;
 
+
+/*
+ * TrainRepository Methods:
+ * 1. save(Train train) -> int
+ * 2. findAll() -> List<Train>
+ * 3. findById(long trainId) -> Train
+ * 4. update(Train train) -> int
+ * 5. updateAvailableSeats(Long trainId, int seatChange) -> int
+ * 6. deleteById(long trainId) -> int
+ * 7. findBySourceAndDestination(String source, String destination) -> List<Train>
+ * 8. findByPriceBetween(double minPrice, double maxPrice) -> List<Train>
+ */
+
+
+
 @Repository
 public class TrainRepository {
     private final JdbcTemplate jdbcTemplate;
@@ -79,6 +94,28 @@ public class TrainRepository {
                 train.getTrainId()
         );
     }
+    
+    // Update available seats
+    public int updateAvailableSeats(Long trainId, int seatChange) {
+        String fetchSql = "UPDATE train SET available_seats = ? WHERE train_id = ?";
+        List<Train> trains = jdbcTemplate.query(fetchSql, trainRowMapper, trainId);
+
+        if (trains.isEmpty()) {
+            return 0; // Train not found, return 0 to indicate no update
+        }
+
+        Train train = trains.get(0); // Retrieve the first (and only) result
+        int newSeats = Math.max(0, train.getAvailableSeats() - seatChange); 
+
+        // Update available seats in the database
+        String updateSql = "UPDATE train SET available_seats = ? WHERE train_id = ?";
+        int rowsUpdated = jdbcTemplate.update(updateSql, newSeats, trainId);
+
+        // Update the train object as well
+        train.setAvailableSeats(newSeats);
+
+        return rowsUpdated;
+    }
 
     // Delete train by ID
     public int deleteById(long trainId) {
@@ -97,4 +134,5 @@ public class TrainRepository {
         String sql = "SELECT * FROM train WHERE price BETWEEN ? AND ?";
         return jdbcTemplate.query(sql, trainRowMapper, minPrice, maxPrice);
     }
+    
 }

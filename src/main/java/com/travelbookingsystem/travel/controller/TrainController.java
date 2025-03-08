@@ -46,7 +46,7 @@ public class TrainController {
     @PostMapping
     public ResponseEntity<?> addTrain(@RequestBody Train train) {
         try {
-            trainService.addTrain(train);
+            trainService.saveTrain(train);
             return ResponseEntity.status(HttpStatus.CREATED).body("Train added successfully!");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error adding train: " + e.getMessage());
@@ -69,7 +69,7 @@ public class TrainController {
     @DeleteMapping("/{trainId}")
     public ResponseEntity<?> deleteTrain(@PathVariable long trainId) {
         try {
-            trainService.deleteTrain(trainId);
+            trainService.deleteTrainById(trainId);
             return ResponseEntity.ok("Train deleted successfully!");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting train: " + e.getMessage());
@@ -80,7 +80,7 @@ public class TrainController {
     @GetMapping("/route")
     public ResponseEntity<?> getTrainsByRoute(@RequestParam String source, @RequestParam String destination) {
         try {
-            List<Train> trains = trainService.getTrainsByRoute(source, destination);
+            List<Train> trains = trainService.getTrainsBySourceAndDestination(source, destination);
             return !trains.isEmpty() ? ResponseEntity.ok(trains) : ResponseEntity.status(HttpStatus.NOT_FOUND).body("No trains found for this route");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching trains by route: " + e.getMessage());

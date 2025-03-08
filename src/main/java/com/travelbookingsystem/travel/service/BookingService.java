@@ -7,6 +7,24 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
+/*
+ * BookingService Methods:
+ * 1. getAllBookings() -> List<Booking>
+ * 2. getBookingById(long bookingId) -> Booking
+ * 3. getBookingsByPassengerId(long passengerId) -> List<Booking>
+ * 4. getBookingsByTransportType(String transportType) -> List<Booking>
+ * 5. createBooking(Booking booking) -> void
+ * 6. bookTrain(Booking booking) -> void
+ * 7. bookFlight(Booking booking) -> void
+ * 8. bookBus(Booking booking) -> void
+ * 9. updateBookingStatus(long bookingId, String status) -> int
+ * 10. updatePaymentStatus(long bookingId, String status) -> int
+ * 11. deleteBooking(long bookingId) -> int
+ */
+
+
+
 @Service
 public class BookingService {
     private final BookingRepository bookingRepository;

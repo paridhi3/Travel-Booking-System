@@ -6,6 +6,20 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
+/**
+ * FlightService Methods:
+ * 1. saveFlight(Flight flight) -> int
+ * 2. getAllFlightes() -> List<Flight>
+ * 3. getFlightById(long flightId) -> Flight
+ * 4. updateFlight(Flight flight) -> int
+ * 5. updateAvailableSeats(Long flightId, int seatChange) -> int
+ * 6. deleteFlightById(long flightId) -> int
+ * 7. getFlightesBySourceAndDestination(String source, String destination) -> List<Flight>
+ * 8. getFlightesByPriceRange(double minPrice, double maxPrice) -> List<Flight>
+ */
+
+
 @Service
 public class FlightService {
     private final FlightRepository flightRepository;
@@ -14,28 +28,43 @@ public class FlightService {
         this.flightRepository = flightRepository;
     }
 
+    // Save a new flight
+    public int saveFlight(Flight flight) {
+        return flightRepository.save(flight);
+    }
+
     // Retrieve all flights
     public List<Flight> getAllFlights() {
-        return flightRepository.getAllFlights();
+        return flightRepository.findAll();
     }
 
-    // Retrieve flights by source and destination
-    public List<Flight> getFlightsByRoute(String source, String destination) {
-        return flightRepository.findFlightsByRoute(source, destination);
+    // Retrieve a flight by ID
+    public Flight getFlightById(long flightId) {
+        return flightRepository.findById(flightId);
     }
 
-    // Add a new flight
-    public void addFlight(Flight flight) {
-        flightRepository.save(flight);
+    // Update flight details
+    public int updateFlight(Flight flight) {
+        return flightRepository.update(flight);
     }
 
-    // Update available seats
-    public void updateAvailableSeats(long flightId, int newSeats) {
-        flightRepository.updateAvailableSeats(flightId, newSeats);
+    // Update available seats when a booking is made or canceled
+    public int updateAvailableFlightSeats(long flightId, int seatChange) {
+        return flightRepository.updateAvailableSeats(flightId, seatChange);
     }
 
     // Delete a flight by ID
-    public void deleteFlight(long flightId) {
-        flightRepository.deleteFlight(flightId);
+    public int deleteFlightById(long flightId) {
+        return flightRepository.deleteById(flightId);
+    }
+
+    // Retrieve flights by source and destination
+    public List<Flight> getFlightsBySourceAndDestination(String source, String destination) {
+        return flightRepository.findBySourceAndDestination(source, destination);
+    }
+
+    // Retrieve flights within a specific price range
+    public List<Flight> getFlightsByPriceRange(double minPrice, double maxPrice) {
+        return flightRepository.findByPriceBetween(minPrice, maxPrice);
     }
 }

@@ -35,7 +35,7 @@ public class FlightController {
     @GetMapping("/route")
     public ResponseEntity<?> getFlightsByRoute(@RequestParam String source, @RequestParam String destination) {
         try {
-            List<Flight> flights = flightService.getFlightsByRoute(source, destination);
+            List<Flight> flights = flightService.getFlightsBySourceAndDestination(source, destination);
             return flights.isEmpty() ? ResponseEntity.status(HttpStatus.NOT_FOUND).body("No flights found for the given route")
                                      : ResponseEntity.ok(flights);
         } catch (Exception e) {
@@ -47,7 +47,7 @@ public class FlightController {
     @PostMapping
     public ResponseEntity<?> addFlight(@RequestBody Flight flight) {
         try {
-            flightService.addFlight(flight);
+            flightService.saveFlight(flight);
             return ResponseEntity.status(HttpStatus.CREATED).body("Flight added successfully!");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error adding flight: " + e.getMessage());
@@ -58,7 +58,7 @@ public class FlightController {
     @DeleteMapping("/{flightId}")
     public ResponseEntity<?> deleteFlight(@PathVariable long flightId) {
         try {
-            flightService.deleteFlight(flightId);
+            flightService.deleteFlightById(flightId);
             return ResponseEntity.ok("Flight deleted successfully!");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting flight: " + e.getMessage());

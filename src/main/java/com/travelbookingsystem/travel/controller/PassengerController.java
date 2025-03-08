@@ -45,12 +45,12 @@ public class PassengerController {
         }
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestParam String email, @RequestParam String password) {
-        boolean isAuthenticated = passengerService.authenticatePassenger(email, password);
-        return isAuthenticated ? ResponseEntity.ok("Login successful")
-                               : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<String> login(@RequestParam String email, @RequestParam String password) {
+//        boolean isAuthenticated = passengerService.authenticatePassenger(email, password);
+//        return isAuthenticated ? ResponseEntity.ok("Login successful")
+//                               : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+//    }
     
     // Add a new passenger
     @PostMapping

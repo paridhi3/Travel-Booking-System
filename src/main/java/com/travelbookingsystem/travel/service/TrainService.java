@@ -6,6 +6,18 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/*
+ * TrainService Methods:
+ * 1. saveTrain(Train train) -> int
+ * 2. getAllTrains() -> List<Train>
+ * 3. getTrainById(long trainId) -> Train
+ * 4. updateTrain(Train train) -> int
+ * 5. updateAvailableSeats(Long trainId, int seatChange) -> int
+ * 6. deleteTrainById(long trainId) -> int
+ * 7. getTrainsBySourceAndDestination(String source, String destination) -> List<Train>
+ * 8. getTrainsByPriceRange(double minPrice, double maxPrice) -> List<Train>
+ */
+
 @Service
 public class TrainService {
     private final TrainRepository trainRepository;
@@ -14,37 +26,34 @@ public class TrainService {
         this.trainRepository = trainRepository;
     }
 
-    // Retrieve all trains
+    public int saveTrain(Train train) {
+        return trainRepository.save(train);
+    }
+
     public List<Train> getAllTrains() {
         return trainRepository.findAll();
     }
 
-    // Retrieve a train by ID
     public Train getTrainById(long trainId) {
         return trainRepository.findById(trainId);
     }
 
-    // Add a new train
-    public void addTrain(Train train) {
-        trainRepository.save(train);
+    public int updateTrain(Train train) {
+        return trainRepository.update(train);
     }
 
-    // Update train details
-    public void updateTrain(Train train) {
-        trainRepository.update(train);
+    public int updateAvailableSeats(Long trainId, int seatChange) {
+        return trainRepository.updateAvailableSeats(trainId, seatChange);
     }
 
-    // Delete a train by ID
-    public void deleteTrain(long trainId) {
-        trainRepository.deleteById(trainId);
+    public int deleteTrainById(long trainId) {
+        return trainRepository.deleteById(trainId);
     }
 
-    // Find trains by source and destination
-    public List<Train> getTrainsByRoute(String source, String destination) {
+    public List<Train> getTrainsBySourceAndDestination(String source, String destination) {
         return trainRepository.findBySourceAndDestination(source, destination);
     }
 
-    // Find trains within a price range
     public List<Train> getTrainsByPriceRange(double minPrice, double maxPrice) {
         return trainRepository.findByPriceBetween(minPrice, maxPrice);
     }
