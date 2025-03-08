@@ -2,7 +2,9 @@ package com.travelbookingsystem.travel.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Data
 @Entity
@@ -23,10 +25,12 @@ public class BusEntity {
     private String destination;
     
     @Column(name = "departure_time", nullable = false)
-    private LocalDateTime departureTime;
+    @JsonFormat(pattern = "HH:mm:ss")
+    private LocalTime departureTime;
     
     @Column(name = "arrival_time", nullable = false)
-    private LocalDateTime arrivalTime;
+    @JsonFormat(pattern = "HH:mm:ss")
+    private LocalTime arrivalTime;
     
     @Column(name = "total_seats", nullable = false)
     private int totalSeats;

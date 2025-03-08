@@ -1,4 +1,5 @@
 package com.travelbookingsystem.travel.service;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.travelbookingsystem.travel.model.Passenger;
 import com.travelbookingsystem.travel.repository.PassengerRepository;
@@ -9,9 +10,19 @@ import java.util.List;
 @Service
 public class PassengerService {
     private final PassengerRepository passengerRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public PassengerService(PassengerRepository passengerRepository) {
         this.passengerRepository = passengerRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder(); // Hashing passwords
+    }
+
+    public boolean authenticatePassenger(String email, String rawPassword) {
+        Passenger passenger = passengerRepository.findByEmail(email);
+        if (passenger == null) {
+            return false; // Passenger not found
+        }
+        return passwordEncoder.matches(rawPassword, passenger.getPassword()); // Secure validation
     }
 
     // Retrieve all passengers
@@ -30,7 +41,7 @@ public class PassengerService {
     }
 
     // Delete a passenger by ID
-    public void deletePassenger(long id) {
-        passengerRepository.deleteById(id);
+    public int deletePassenger(long id) {
+        return passengerRepository.deleteById(id);
     }
 }

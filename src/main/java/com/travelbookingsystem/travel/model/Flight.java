@@ -1,14 +1,14 @@
 package com.travelbookingsystem.travel.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class Flight {
     private long flightId;
     private String airlineName;
     private String source;
     private String destination;
-    private LocalDateTime departureTime;
-    private LocalDateTime arrivalTime;
+    private LocalTime departureTime;
+    private LocalTime arrivalTime;
     private int totalSeats;
     private int availableSeats;
     private double price;
@@ -19,8 +19,8 @@ public class Flight {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Flight(long flightId, String airlineName, String source, String destination, LocalDateTime departureTime,
-			LocalDateTime arrivalTime, int totalSeats, int availableSeats, double price, FlightClass flightClass) {
+	public Flight(long flightId, String airlineName, String source, String destination, LocalTime departureTime,
+			LocalTime arrivalTime, int totalSeats, int availableSeats, double price, FlightClass flightClass) {
 		super();
 		this.flightId = flightId;
 		this.airlineName = airlineName;
@@ -34,8 +34,8 @@ public class Flight {
 		this.flightClass = flightClass;
 	}
 
-	public Flight(String airlineName, String source, String destination, LocalDateTime departureTime,
-			LocalDateTime arrivalTime, int totalSeats, int availableSeats, double price, FlightClass flightClass) {
+	public Flight(String airlineName, String source, String destination, LocalTime departureTime,
+			LocalTime arrivalTime, int totalSeats, int availableSeats, double price, FlightClass flightClass) {
 		super();
 		this.airlineName = airlineName;
 		this.source = source;
@@ -80,19 +80,19 @@ public class Flight {
 		this.destination = destination;
 	}
 
-	public LocalDateTime getDepartureTime() {
+	public LocalTime getDepartureTime() {
 		return departureTime;
 	}
 
-	public void setDepartureTime(LocalDateTime departureTime) {
+	public void setDepartureTime(LocalTime departureTime) {
 		this.departureTime = departureTime;
 	}
 
-	public LocalDateTime getArrivalTime() {
+	public LocalTime getArrivalTime() {
 		return arrivalTime;
 	}
 
-	public void setArrivalTime(LocalDateTime arrivalTime) {
+	public void setArrivalTime(LocalTime arrivalTime) {
 		this.arrivalTime = arrivalTime;
 	}
 

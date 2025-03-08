@@ -25,9 +25,9 @@ public class BookingService {
         return bookingRepository.findById(bookingId);
     }
 
-    // Retrieve bookings by user ID
-    public List<Booking> getBookingsByUserId(long userId) {
-        return bookingRepository.findByUserId(userId);
+    // Retrieve bookings by passenger ID
+    public List<Booking> getBookingsByPassengerId(long passengerId) {
+        return bookingRepository.findByPassengerId(passengerId);
     }
 
     // Retrieve bookings by transport type
@@ -62,17 +62,17 @@ public class BookingService {
     }
 
     // Update booking status
-    public void updateBookingStatus(long bookingId, String status) {
-        bookingRepository.updateBookingStatus(bookingId, status);
+    public int updateBookingStatus(long bookingId, String status) {
+       return bookingRepository.updateBookingStatus(bookingId, status);
     }
 
     // Update payment status
-    public void updatePaymentStatus(long bookingId, String status) {
-        bookingRepository.updatePaymentStatus(bookingId, status);
+    public int updatePaymentStatus(long bookingId, String status) {
+        return bookingRepository.updatePaymentStatus(bookingId, status);
     }
 
     // Delete a booking by ID
-    public void deleteBooking(long bookingId) {
-        bookingRepository.deleteById(bookingId);
+    public int deleteBooking(long bookingId) {
+        return bookingRepository.deleteById(bookingId);
     }
 }

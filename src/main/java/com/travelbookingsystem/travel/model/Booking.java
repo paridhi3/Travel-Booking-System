@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class Booking {
     private long bookingId;
-    private long userId;
+    private long passengerId;
     private String transportType; // train, bus, flight
     private long transportId;
     private String seatNumber;
@@ -17,11 +17,11 @@ public class Booking {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Booking(long bookingId, long userId, String transportType, long transportId, String seatNumber,
+	public Booking(long bookingId, long passengerId, String transportType, long transportId, String seatNumber,
 			String bookingStatus, String paymentStatus, LocalDateTime bookingDate) {
 		super();
 		this.bookingId = bookingId;
-		this.userId = userId;
+		this.passengerId = passengerId;
 		this.transportType = transportType;
 		this.transportId = transportId;
 		this.seatNumber = seatNumber;
@@ -30,10 +30,10 @@ public class Booking {
 		this.bookingDate = bookingDate;
 	}
 
-	public Booking(long userId, String transportType, long transportId, String seatNumber,
+	public Booking(long passengerId, String transportType, long transportId, String seatNumber,
 			String bookingStatus, String paymentStatus, LocalDateTime bookingDate) {
 		super();
-		this.userId = userId;
+		this.passengerId = passengerId;
 		this.transportType = transportType;
 		this.transportId = transportId;
 		this.seatNumber = seatNumber;
@@ -50,12 +50,12 @@ public class Booking {
 		this.bookingId = bookingId;
 	}
 
-	public long getUserId() {
-		return userId;
+	public long getPassengerId() {
+		return passengerId;
 	}
 
-	public void setUserId(long userId) {
-		this.userId = userId;
+	public void setPassengerId(long passengerId) {
+		this.passengerId = passengerId;
 	}
 
 	public String getTransportType() {
@@ -108,7 +108,7 @@ public class Booking {
 
 	@Override
 	public String toString() {
-		return "Booking [bookingId=" + bookingId + ", userId=" + userId + ", transportType=" + transportType
+		return "Booking [bookingId=" + bookingId + ", passengerId=" + passengerId + ", transportType=" + transportType
 				+ ", transportId=" + transportId + ", seatNumber=" + seatNumber + ", bookingStatus=" + bookingStatus
 				+ ", paymentStatus=" + paymentStatus + ", bookingDate=" + bookingDate + "]";
 	}

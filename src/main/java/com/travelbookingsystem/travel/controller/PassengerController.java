@@ -2,47 +2,79 @@ package com.travelbookingsystem.travel.controller;
 
 import com.travelbookingsystem.travel.model.Passenger;
 import com.travelbookingsystem.travel.service.PassengerService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*")  // Allow requests from any origin
 @RequestMapping("/api/passengers")
 public class PassengerController {
 
-    @Autowired
-    private PassengerService passengerService;
+    private final PassengerService passengerService;
+
+    // Constructor-based injection
+    public PassengerController(PassengerService passengerService) {
+        this.passengerService = passengerService;
+    }
 
     // Retrieve all passengers
     @GetMapping
-    public List<Passenger> getAllPassengers() {
-        return passengerService.getAllPassengers();
+    public ResponseEntity<List<Passenger>> getAllPassengers() {
+        try {
+            List<Passenger> passengers = passengerService.getAllPassengers();
+            return ResponseEntity.ok(passengers);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
     }
 
     // Retrieve a passenger by ID
     @GetMapping("/{id}")
-    public Passenger getPassenger(@PathVariable Long id) {
-        return passengerService.getPassengerById(id);
+    public ResponseEntity<?> getPassenger(@PathVariable Long id) {
+        try {
+            Passenger passenger = passengerService.getPassengerById(id);
+            return passenger != null ? ResponseEntity.ok(passenger)
+                                     : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Passenger not found");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error fetching passenger: " + e.getMessage());
+        }
     }
 
-    // Add a new passenger (Registration)
-    @PostMapping("/register")
-    public String createPassenger(@RequestBody Passenger passenger) {
-        passengerService.addPassenger(passenger);
-        return "Passenger added successfully";
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestParam String email, @RequestParam String password) {
+        boolean isAuthenticated = passengerService.authenticatePassenger(email, password);
+        return isAuthenticated ? ResponseEntity.ok("Login successful")
+                               : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
     }
     
-//    @PostMapping("/login")
-//    public String loginPassenger(@RequestBody LoginRequest request) {
-//        boolean isAuthenticated = passengerService.authenticatePassenger(request);
-//        return isAuthenticated ? "Login successful" : "Invalid credentials";
-//    }
+    // Add a new passenger
+    @PostMapping
+    public ResponseEntity<String> createPassenger(@RequestBody Passenger passenger) {
+        try {
+            passengerService.addPassenger(passenger);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("Passenger added successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error adding passenger: " + e.getMessage());
+        }
+    }
 
     // Delete a passenger by ID
     @DeleteMapping("/{id}")
-    public String deletePassenger(@PathVariable Long id) {
-        passengerService.deletePassenger(id);
-        return "Passenger deleted successfully";
+    public ResponseEntity<String> deletePassenger(@PathVariable Long id) {
+        try {
+            int deleted = passengerService.deletePassenger(id);
+            return deleted>0 ? ResponseEntity.ok("Passenger deleted successfully")
+                           : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Passenger not found");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error deleting passenger: " + e.getMessage());
+        }
     }
 }

@@ -37,6 +37,12 @@ public class PassengerRepository {
         String sql = "SELECT * FROM passenger WHERE passenger_id = ?";
         return jdbcTemplate.queryForObject(sql, passengerRowMapper, id);
     }
+    
+    // Method to find a passenger by Email
+    public Passenger findByEmail(String email) {
+        String sql = "SELECT * FROM passenger WHERE email = ?";
+        return jdbcTemplate.queryForObject(sql, passengerRowMapper, email);
+    }
 
     // Method to add a new passenger
     public int save(Passenger passenger) {

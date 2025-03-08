@@ -18,7 +18,7 @@ public class BookingRepository {
     // RowMapper to map SQL result to Booking object
     private final RowMapper<Booking> bookingRowMapper = (rs, rowNum) -> new Booking(
             rs.getLong("booking_id"),
-            rs.getLong("user_id"),
+            rs.getLong("passenger_id"),
             rs.getString("transport_type"),
             rs.getLong("transport_id"),
             rs.getString("seat_number"),
@@ -29,10 +29,10 @@ public class BookingRepository {
 
     // Save a new booking
     public int save(Booking booking) {
-        String sql = "INSERT INTO booking (user_id, transport_type, transport_id, seat_number, booking_status, payment_status, booking_date) " +
+        String sql = "INSERT INTO booking (passenger_id, transport_type, transport_id, seat_number, booking_status, payment_status, booking_date) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?)";
         return jdbcTemplate.update(sql,
-                booking.getUserId(),
+                booking.getPassengerId(),
                 booking.getTransportType(),
                 booking.getTransportId(),
                 booking.getSeatNumber(),
@@ -54,10 +54,10 @@ public class BookingRepository {
         return jdbcTemplate.queryForObject(sql, bookingRowMapper, bookingId);
     }
 
-    // Find bookings by user ID
-    public List<Booking> findByUserId(long userId) {
-        String sql = "SELECT * FROM booking WHERE user_id = ?";
-        return jdbcTemplate.query(sql, bookingRowMapper, userId);
+    // Find bookings by passenger ID
+    public List<Booking> findByPassengerId(long passengerId) {
+        String sql = "SELECT * FROM booking WHERE passenger_id = ?";
+        return jdbcTemplate.query(sql, bookingRowMapper, passengerId);
     }
 
     // Update booking status
