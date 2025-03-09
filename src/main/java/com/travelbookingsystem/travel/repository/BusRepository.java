@@ -94,24 +94,18 @@ public class BusRepository {
     
     // Update available seats
     public int updateAvailableSeats(Long busId, int seatChange) {
-        String fetchSql = "UPDATE bus SET available_seats = ? WHERE bus_id = ?";
-        List<Bus> buss = jdbcTemplate.query(fetchSql, busRowMapper, busId);
+        String fetchSql = "SELECT available_seats FROM bus WHERE bus_id = ?";
+        Integer availableSeats = jdbcTemplate.queryForObject(fetchSql, Integer.class, busId);
 
-        if (buss.isEmpty()) {
-            return 0; // Bus not found, return 0 to indicate no update
+        if (availableSeats == null) {
+            return 0; // Bus not found
         }
 
-        Bus bus = buss.get(0); // Retrieve the first (and only) result
-        int newSeats = Math.max(0, bus.getAvailableSeats() - seatChange); 
+        int newSeats = Math.max(0, availableSeats - seatChange);
 
         // Update available seats in the database
         String updateSql = "UPDATE bus SET available_seats = ? WHERE bus_id = ?";
-        int rowsUpdated = jdbcTemplate.update(updateSql, newSeats, busId);
-
-        // Update the bus object as well
-        bus.setAvailableSeats(newSeats);
-
-        return rowsUpdated;
+        return jdbcTemplate.update(updateSql, newSeats, busId);
     }
 
     // Delete bus by ID

@@ -2,7 +2,10 @@ package com.travelbookingsystem.travel.service;
 
 import com.travelbookingsystem.travel.model.Bus;
 import com.travelbookingsystem.travel.repository.BusRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,7 +15,7 @@ import java.util.List;
  * 2. getAllBuses() -> List<Bus>
  * 3. getBusById(long busId) -> Bus
  * 4. updateBus(Bus bus) -> int
- * 5. updateAvailableSeats(Long busId, int seatChange) -> int
+ * 5. reduceAvailableSeats(Long busId) -> boolean
  * 6. deleteBusById(long busId) -> int
  * 7. getBusesBySourceAndDestination(String source, String destination) -> List<Bus>
  * 8. getBusesByPriceRange(double minPrice, double maxPrice) -> List<Bus>
@@ -21,6 +24,7 @@ import java.util.List;
 @Service
 public class BusService {
 
+	@Autowired
     private final BusRepository busRepository;
 
     public BusService(BusRepository busRepository) {
@@ -46,10 +50,30 @@ public class BusService {
     public int updateBus(Bus bus) {
         return busRepository.update(bus);
     }
+    
+    // Update available seats when a booking is made   
+    @Transactional
+    public boolean reduceAvailableSeats(Long busId) {
+        Bus bus = busRepository.findById(busId);
+        
+        if (bus == null) {
+            System.out.println("Bus not found with ID: " + busId);
+            return false;
+        }
 
-    // Update available seats when a booking is made
-    public int updateAvailableBusSeats(Long busId, int seatChange) {
-        return busRepository.updateAvailableSeats(busId, seatChange);
+        if (bus.getAvailableSeats() <= 0) {
+            System.out.println("No available seats for Bus ID: " + busId);
+            return false;
+        }
+        
+        System.out.println("Before Update: Available Seats = " + bus.getAvailableSeats());
+
+        int rowsUpdated = busRepository.updateAvailableSeats(busId, 1);
+        bus.setAvailableSeats(bus.getAvailableSeats() - 1);
+        
+        System.out.println("After Update: Available Seats = " + bus.getAvailableSeats());
+        
+        return rowsUpdated > 0;
     }
 
     // Delete a bus by ID

@@ -73,7 +73,7 @@ public class BookingRepository {
         String sql = "SELECT * FROM booking WHERE passenger_id = ?";
         return jdbcTemplate.query(sql, bookingRowMapper, passengerId);
     }
-
+  
     // Update booking status
     public int updateBookingStatus(long bookingId, String status) {
         String sql = "UPDATE booking SET booking_status = ? WHERE booking_id = ?";
@@ -85,7 +85,7 @@ public class BookingRepository {
         String sql = "UPDATE booking SET payment_status = ? WHERE booking_id = ?";
         return jdbcTemplate.update(sql, status, bookingId);
     }
-
+     
     // Delete booking by ID
     public int deleteById(long bookingId) {
         String sql = "DELETE FROM booking WHERE booking_id = ?";

@@ -2,7 +2,10 @@ package com.travelbookingsystem.travel.service;
 
 import com.travelbookingsystem.travel.model.Booking;
 import com.travelbookingsystem.travel.repository.BookingRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,11 +30,20 @@ import java.util.List;
 
 @Service
 public class BookingService {
+	
+	@Autowired
     private final BookingRepository bookingRepository;
 
     public BookingService(BookingRepository bookingRepository) {
         this.bookingRepository = bookingRepository;
     }
+    
+    @Autowired
+    private FlightService flightService;
+    @Autowired
+    private TrainService trainService;
+    @Autowired
+    private BusService busService;
 
     // Retrieve all bookings
     public List<Booking> getAllBookings() {
@@ -52,31 +64,43 @@ public class BookingService {
     public List<Booking> getBookingsByTransportType(String transportType) {
         return bookingRepository.findByTransportType(transportType);
     }
-
+    
     // Create a booking
-    private void createBooking(Booking booking) {
-        booking.setBookingStatus("CONFIRMED");
-        booking.setPaymentStatus("PENDING");
-        booking.setBookingDate(LocalDateTime.now());
-        bookingRepository.save(booking);
-    }
+    @Transactional    
+    public int createBooking(Booking booking, Long passengerId, Long transportId) {
+    	
+    	booking.setPassengerId(passengerId);
+    	booking.setTransportId(transportId);
+    	booking.setBookingDate(LocalDateTime.now());
+    	boolean seatsUpdated;
+    	
+    	System.out.println(booking.getTransportType());
+    	
+        switch (booking.getTransportType().toUpperCase()) {
+            case "FLIGHT":
+            	System.out.println("Reducing seats for FLIGHT ID: " + booking.getTransportId());
+            	seatsUpdated = flightService.reduceAvailableSeats(booking.getTransportId());
+                break;
+            case "TRAIN":
+            	System.out.println("Reducing seats for TRAIN ID: " + booking.getTransportId());
+            	seatsUpdated = trainService.reduceAvailableSeats(booking.getTransportId());
+            	break;
+            case "BUS":
+            	System.out.println("Reducing seats for BUS ID: " + booking.getTransportId());
+            	seatsUpdated = busService.reduceAvailableSeats(booking.getTransportId());
+            	break;
+            default:
+            	System.out.println("Invalid transport type: " + booking.getTransportType());
+                return 0;
+        }
+        
+        System.out.println("Booking confirmed");
+        
+        if (!seatsUpdated) {
+            throw new IllegalStateException("No available seats for this booking");
+        }
 
-    // Book a Train
-    public void bookTrain(Booking booking) {
-        booking.setTransportType("TRAIN");
-        createBooking(booking);
-    }
-
-    // Book a Flight
-    public void bookFlight(Booking booking) {
-        booking.setTransportType("FLIGHT");
-        createBooking(booking);
-    }
-
-    // Book a Bus
-    public void bookBus(Booking booking) {
-        booking.setTransportType("BUS");
-        createBooking(booking);
+        return bookingRepository.save(booking);
     }
 
     // Update booking status

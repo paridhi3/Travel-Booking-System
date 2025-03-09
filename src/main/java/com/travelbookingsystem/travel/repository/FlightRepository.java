@@ -92,34 +92,20 @@ public class FlightRepository {
         );
     }
 
-//    // Method to update available seats
-//    public int updateAvailableSeats(long flightId, int seatChange) {
-//        // Fetch the flight object
-//        String fetchSql = "SELECT * FROM flight WHERE flight_id = ?";
-//        List<Flight> flights = jdbcTemplate.query(fetchSql, flightRowMapper, flightId);
-//
-//        if (flights.isEmpty()) {
-//            return 0; // Flight not found, return 0 to indicate no update
-//        }
-//
-//        Flight flight = flights.get(0); // Retrieve the first (and only) result
-//        int newSeats = Math.max(0, flight.getAvailableSeats() - seatChange); 
-//
-//        // Update available seats in the database
-//        String updateSql = "UPDATE flight SET available_seats = ? WHERE flight_id = ?";
-//        int rowsUpdated = jdbcTemplate.update(updateSql, newSeats, flightId);
-//
-//        // Update the flight object as well
-//        flight.setAvailableSeats(newSeats);
-//
-//        return rowsUpdated;
-//    }
-    
-    // Method to update available seats
-    public int updateAvailableSeats(long flightId, int seatChange) {
-        // Reduce available seats but ensure it doesn’t go below zero
-        String sql = "UPDATE flights SET available_seats = GREATEST(available_seats - ?, 0) WHERE flight_id = ?";
-        return jdbcTemplate.update(sql, seatChange, flightId);
+    // Update available seats
+    public int updateAvailableSeats(Long flightId, int seatChange) {
+        String fetchSql = "SELECT available_seats FROM flight WHERE flight_id = ?";
+        Integer availableSeats = jdbcTemplate.queryForObject(fetchSql, Integer.class, flightId);
+
+        if (availableSeats == null) {
+            return 0; // Flight not found
+        }
+
+        int newSeats = Math.max(0, availableSeats - seatChange);
+
+        // Update available seats in the database
+        String updateSql = "UPDATE flight SET available_seats = ? WHERE flight_id = ?";
+        return jdbcTemplate.update(updateSql, newSeats, flightId);
     }
 
     

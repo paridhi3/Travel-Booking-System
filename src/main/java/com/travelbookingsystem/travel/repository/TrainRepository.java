@@ -97,25 +97,20 @@ public class TrainRepository {
     
     // Update available seats
     public int updateAvailableSeats(Long trainId, int seatChange) {
-        String fetchSql = "UPDATE train SET available_seats = ? WHERE train_id = ?";
-        List<Train> trains = jdbcTemplate.query(fetchSql, trainRowMapper, trainId);
+        String fetchSql = "SELECT available_seats FROM train WHERE train_id = ?";
+        Integer availableSeats = jdbcTemplate.queryForObject(fetchSql, Integer.class, trainId);
 
-        if (trains.isEmpty()) {
-            return 0; // Train not found, return 0 to indicate no update
+        if (availableSeats == null) {
+            return 0; // Train not found
         }
 
-        Train train = trains.get(0); // Retrieve the first (and only) result
-        int newSeats = Math.max(0, train.getAvailableSeats() - seatChange); 
+        int newSeats = Math.max(0, availableSeats - seatChange);
 
         // Update available seats in the database
         String updateSql = "UPDATE train SET available_seats = ? WHERE train_id = ?";
-        int rowsUpdated = jdbcTemplate.update(updateSql, newSeats, trainId);
-
-        // Update the train object as well
-        train.setAvailableSeats(newSeats);
-
-        return rowsUpdated;
+        return jdbcTemplate.update(updateSql, newSeats, trainId);
     }
+
 
     // Delete train by ID
     public int deleteById(long trainId) {

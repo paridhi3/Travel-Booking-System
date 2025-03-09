@@ -8,6 +8,23 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
+/**
+ * BookingController Methods:
+ * 1. getAllBookings(): Retrieve all bookings.
+ * 2. getBookingById(long bookingId): Retrieve a booking by booking ID.
+ * 3. getBookingsByPassengerId(long passengerId): Retrieve bookings by passenger ID.
+ * 4. getBookingsByTransportType(String transportType): Retrieve bookings by transport type.
+ * 5. bookTrain(Booking booking): Create a train booking.
+ * 6. bookFlight(Booking booking): Create a flight booking.
+ * 7. bookBus(Booking booking): Create a bus booking.
+ * 8. updateBookingStatus(long bookingId, String status): Update the status of a booking.
+ * 9. updatePaymentStatus(long bookingId, String status): Update the payment status of a booking.
+ * 10. deleteBooking(long bookingId): Delete a booking.
+ */
+
+
+
 @RestController
 @CrossOrigin(origins = "*") // Allow requests from any origin
 @RequestMapping("/api/bookings")
@@ -30,7 +47,7 @@ public class BookingController {
         }
     }
 
-    // Get booking by ID
+    // Get booking by booking ID
     @GetMapping("/{bookingId}")
     public ResponseEntity<?> getBookingById(@PathVariable long bookingId) {
         try {
@@ -67,10 +84,16 @@ public class BookingController {
     }
 
     // Create a train booking
-    @PostMapping("/train")
+    @PostMapping("/bookTrain")
     public ResponseEntity<?> bookTrain(@RequestBody Booking booking) {
         try {
-            bookingService.bookTrain(booking);
+        	
+        	// Ensure the transport type is "BUS"
+            if (!"TRAIN".equalsIgnoreCase(booking.getTransportType())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid transport type. This endpoint only allows bus bookings.");
+            }
+        	
+            bookingService.createBooking(booking, booking.getPassengerId(), booking.getTransportId());
             return ResponseEntity.status(HttpStatus.CREATED).body("Train booking confirmed");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error booking train: " + e.getMessage());
@@ -78,28 +101,41 @@ public class BookingController {
     }
 
     // Create a flight booking
-    @PostMapping("/flight")
+    @PostMapping("/bookFlight")
     public ResponseEntity<?> bookFlight(@RequestBody Booking booking) {
         try {
-            bookingService.bookFlight(booking);
+        	
+        	// Ensure the transport type is "BUS"
+            if (!"FLIGHT".equalsIgnoreCase(booking.getTransportType())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid transport type. This endpoint only allows bus bookings.");
+            }
+        	
+            bookingService.createBooking(booking, booking.getPassengerId(), booking.getTransportId());
             return ResponseEntity.status(HttpStatus.CREATED).body("Flight booking confirmed");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error booking flight: " + e.getMessage());
         }
     }
 
-    // Create a bus booking
-    @PostMapping("/bus")
+    // Create a bus booking    
+    @PostMapping("/bookBus")
     public ResponseEntity<?> bookBus(@RequestBody Booking booking) {
         try {
-            bookingService.bookBus(booking);
+            // Ensure the transport type is "BUS"
+            if (!"BUS".equalsIgnoreCase(booking.getTransportType())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid transport type. This endpoint only allows bus bookings.");
+            }
+            
+            bookingService.createBooking(booking, booking.getPassengerId(), booking.getTransportId());
             return ResponseEntity.status(HttpStatus.CREATED).body("Bus booking confirmed");
+            
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error booking bus: " + e.getMessage());
         }
     }
 
- // Update booking status
+
+    // Update booking status
     @PutMapping("/{bookingId}/status")
     public ResponseEntity<?> updateBookingStatus(@PathVariable long bookingId, @RequestParam String status) {
         try {
@@ -116,8 +152,8 @@ public class BookingController {
     public ResponseEntity<?> updatePaymentStatus(@PathVariable long bookingId, @RequestParam String status) {
         try {
             int updated = bookingService.updatePaymentStatus(bookingId, status);
-            return updated>0 ? ResponseEntity.ok("Payment status updated successfully")
-                           : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Booking not found");
+            return updated > 0 ? ResponseEntity.ok("Payment status updated successfully")
+                               : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Booking not found");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating payment status: " + e.getMessage());
         }
@@ -128,8 +164,8 @@ public class BookingController {
     public ResponseEntity<?> deleteBooking(@PathVariable long bookingId) {
         try {
             int deleted = bookingService.deleteBooking(bookingId);
-            return deleted>0 ? ResponseEntity.ok("Booking deleted successfully")
-                           : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Booking not found");
+            return deleted > 0 ? ResponseEntity.ok("Booking deleted successfully")
+                               : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Booking not found");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting booking: " + e.getMessage());
         }
